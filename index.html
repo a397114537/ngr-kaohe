@@ -472,7 +472,7 @@ const App=(()=>{
     $("rev-state").innerHTML=rev?'<span style="color:var(--ok)">✓ 你（管理员）有权填写审核结果</span>':'<span style="color:var(--danger)">⚠ 仅管理员可填写审核结果，请登录后操作</span>';
     if(!orders.length){$("ptable").innerHTML='<tr><td class="empty" style="padding:30px">该考核月暂无工单</td></tr>';return}
     $("ptable").innerHTML=`<thead><tr><th>日期</th><th>工单号</th><th>错误原因</th><th>具体原因</th><th>升级单属主<br>(被扣分人)</th>
-      <th>扣分人<br>(执行检查)</th><th>扣分数</th><th>申诉理由<br>(被扣分人填)</th><th>是否审核通过<br>(仅审核人)</th></tr></thead><tbody>`+
+      <th>扣分人<br>(执行检查)</th><th>扣分数</th><th>申诉理由<br>(被扣分人填)</th><th>是否审核通过<br>(仅审核人)</th>${isAdmin()?'<th>操作<br>(管理员)</th>':''}</tr></thead><tbody>`+
       orders.map(o=>{
         const waived=o.appeal&&o.appeal.review==="approved";
         const review=o.appeal?o.appeal.review:"";
@@ -485,7 +485,7 @@ const App=(()=>{
           <td style="max-width:200px">${esc(o.detail)}</td><td>${esc(o.owner)}</td><td>${esc(o.deductor)}</td>
           <td class="ppoints ${waived?'waived':''}">${esc(o.points)}</td>
           <td><textarea onchange="App.saveAppeal('${o.id}',this.value)" placeholder="填写申诉理由...">${esc(o.appeal?o.appeal.reason:"")}</textarea></td>
-          <td>${revCtrl}</td></tr>`;
+          <td>${revCtrl}</td>${isAdmin()?`<td class="op"><button class="del" onclick="App.delOrder('${o.id}')">删除</button></td>`:""}</tr>`;
       }).join("")+`</tbody>`;
   }
   function renderSummary(rows){
@@ -619,6 +619,12 @@ const App=(()=>{
     try{if(type==="feedback")await api("DELETE","/api/feedback/"+id);if(type==="wiki")await api("DELETE","/api/wiki/"+id);
       await renderFeedback();await renderWiki();loadCounts();toast("已删除")}catch(e){toast(e.message)}
   }
+  async function delOrder(id){
+    if(!confirm("确定删除这条工单记录?此操作不可恢复。"))return;
+    try{await api("DELETE","/api/orders/"+id);
+      if(curPeriod)await openPeriod(curPeriod.y,curPeriod.m);
+      await renderPeriodGrid();loadCounts();toast("工单已删除 ✓")}catch(e){toast(e.message)}
+  }
 
   /* ---- init ---- */
   async function init(){
@@ -632,7 +638,7 @@ const App=(()=>{
 
   return {login,logout,home,open,resetOrder,saveOrder,openPeriod,saveAppeal,saveReview,exportCSV,
     openSettings,closeModal,settingsTab,addUser,changeRole,resetPw,addReason,delReason,addPoint,delPoint,
-    fbTab,resetFeedback,saveFeedback,resetWiki,saveWiki,delRecord};
+    fbTab,resetFeedback,saveFeedback,resetWiki,saveWiki,delRecord,delOrder};
 })();
 </script>
 </body>
