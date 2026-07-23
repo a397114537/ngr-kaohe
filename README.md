@@ -27,7 +27,7 @@ node server.js
 
 > 也可以点下面的按钮快速开始（需先把代码推到 GitHub 公开仓库）：
 >
-> [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=你的仓库地址)
+> [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/a397114537/ngr-kaohe)
 
 ### 方式二：手动 Web Service（同平台，更可控）
 
