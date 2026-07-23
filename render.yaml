@@ -13,10 +13,7 @@ services:
     envVars:
       - key: NODE_VERSION
         value: "20"
-      - key: DB_PATH           # 数据存到持久盘，重启/重新部署不丢
-        value: "/data/db.json"
-    # 持久磁盘：免费实例重启会清空本地文件，挂盘后数据保留
-    disk:
-      name: ngr-data
-      mountPath: /data
-      sizeGB: 1
+      # 免费实例不支持持久磁盘(disk)，DB_PATH 不设则用默认路径 data/db.json
+      # 注意：免费实例重新部署会清空数据。如需数据持久化请升级到付费实例并取消下面的注释：
+      # - key: DB_PATH
+      #   value: "/data/db.json"
